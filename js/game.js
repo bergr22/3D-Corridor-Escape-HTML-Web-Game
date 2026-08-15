@@ -263,7 +263,7 @@ const easyQuestionPool = [
     }
 ];
 
-// 2. MEDIUM QUESTION POOL (20 QUESTIONS - Mokoko replaced with Solar System question)
+// 2. MEDIUM QUESTION POOL (20 QUESTIONS)
 const mediumQuestionPool = [
     {
         id: 1,
@@ -1083,13 +1083,13 @@ function updateLanguage(lang) {
 }
 
 /**
- * Builds 3D Night Forest Clearing, Realistic Campfire & Multi-Part Anatomical Wolf (Per Uploaded Photo)
+ * Builds 3D Night Forest Clearing, Realistic Campfire & Multi-Part Anatomical Wolf 
  */
 function buildNightForestScene(zBase) {
     const forestGroup = new THREE.Group();
     forestGroup.position.set(0, 0, zBase);
 
-    // 1. Warm Brown Earth / Dirt Soil Clearing Floor (Per Paint Drawing #3)
+    // 1. Warm Brown Earth / Dirt Soil Clearing Floor 
     const floorRadius = 16;
     const pathGeo = new THREE.CircleGeometry(floorRadius, 40);
     const pathMat = new THREE.MeshStandardMaterial({ map: dirtTexture, color: 0xa8744d, roughness: 0.92 });
@@ -1099,7 +1099,7 @@ function buildNightForestScene(zBase) {
     pathFloor.receiveShadow = true;
     forestGroup.add(pathFloor);
 
-    // Black Teleportation / Spawn Spot (Per Paint Drawing #3)
+    // Black Teleportation / Spawn Spot 
     const spawnSpotGeo = new THREE.CircleGeometry(1.4, 32);
     const spawnSpotMat = new THREE.MeshBasicMaterial({ color: 0x060504, transparent: true, opacity: 0.92 });
     const spawnSpot = new THREE.Mesh(spawnSpotGeo, spawnSpotMat);
@@ -1107,7 +1107,7 @@ function buildNightForestScene(zBase) {
     spawnSpot.rotation.x = -Math.PI / 2;
     forestGroup.add(spawnSpot);
 
-    // 2. 3D GLOWING MOON IN THE SKY (Per Paint Drawing #3)
+    // 2. 3D GLOWING MOON IN THE SKY 
     const moonGeo = new THREE.SphereGeometry(2.4, 24, 24);
     const moonMat = new THREE.MeshBasicMaterial({ color: 0xfffae0 });
     const moonMesh = new THREE.Mesh(moonGeo, moonMat);
@@ -1256,7 +1256,7 @@ function buildNightForestScene(zBase) {
     earR.position.set(0.32, 2.4, 1.2);
     wolfMeshGroup.add(earR);
 
-    // REALISTIC DARK WOLF EYES (No glowing red lights, matching uploaded photo)
+    // REALISTIC DARK WOLF EYES 
     const eyeGeo = new THREE.SphereGeometry(0.09, 8, 8);
     const eyeMat = new THREE.MeshStandardMaterial({ color: 0x24180d, roughness: 0.3 });
     const pupilMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
@@ -1275,7 +1275,7 @@ function buildNightForestScene(zBase) {
     wolfMeshGroup.add(eyeR);
     wolfMeshGroup.add(pupilR);
 
-    // Scale wolf down to natural realistic wolf dimensions (~1.1m height)
+    // Scale wolf down to natural realistic wolf dimensions 
     wolfMeshGroup.scale.set(0.52, 0.52, 0.52);
 
     // 4 ARTICULATED LEG PIVOTS (FOR REALISTIC GALLOPING RUN ANIMATION)
@@ -1367,7 +1367,7 @@ function createPineTree(group, x, z, leafMat, trunkMat, scale = 1.0) {
 }
 
 /**
- * Builds Ending #2 Stage: 48m Long Corridor, "DONT LOOK BACK" wall writing & 3D Triangle Entity (Matching Paint Drawing)
+ * Builds Ending #2 Stage: 48m Long Corridor, "DONT LOOK BACK" wall writing & 3D Triangle Entity 
  */
 function buildEnding2Scene(zStart) {
     const corridorWidth = 5;
@@ -1440,7 +1440,7 @@ function buildEnding2Scene(zStart) {
     ending2EndLight.position.set(0, 3.2, zEnd + 6);
     scene.add(ending2EndLight);
 
-    // 3D TRIANGLE ENTITY (Yaratık matching User's Paint Drawing)
+    // 3D TRIANGLE ENTITY 
     triangleEntityGroup = new THREE.Group();
 
     // Black Pyramid / Cone Body
@@ -1451,7 +1451,7 @@ function buildEnding2Scene(zStart) {
     pyramid.rotation.y = Math.PI;
     triangleEntityGroup.add(pyramid);
 
-    // 2 GLOWING WHITE RING EYES (Per User Paint Drawing)
+    // 2 GLOWING WHITE RING EYES 
     const ringGeo = new THREE.TorusGeometry(0.18, 0.035, 8, 24);
     const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
