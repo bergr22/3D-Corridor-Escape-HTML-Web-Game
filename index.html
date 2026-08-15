@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corridor Escape - First Person Horror</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Three.js 3D WebGL Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- 3D WebGL Canvas -->
+        <canvas id="webgl-canvas"></canvas>
+
+        <!-- Cinematic Vignette Overlay -->
+        <div id="vignette-overlay"></div>
+
+        <!-- Stage Progress Counter Overlay (1 / 15) -->
+        <div id="room-counter" class="hidden">1 / 15</div>
+
+        <!-- Center Crosshair -->
+        <div id="crosshair" class="hidden"></div>
+
+        <!-- Minimal Interaction Prompt -->
+        <div id="interaction-prompt">[E]</div>
+
+        <!-- Smooth Screen Fade Overlay -->
+        <div id="fade-overlay"></div>
+
+        <!-- Red Blood Jumpscare Flash Overlay -->
+        <div id="jumpscare-overlay"></div>
+
+        <!-- AAA MAIN MENU OVERLAY -->
+        <div id="main-menu" class="active">
+            <div class="menu-backdrop-glow"></div>
+            <div class="main-menu-content">
+                <div class="menu-header">
+                    <div class="badge-tag">FIRST PERSON HORROR ENGINE</div>
+                    <h1 class="game-title">CORRIDOR<br><span class="highlight">ESCAPE</span></h1>
+                    <p class="game-subtitle">Survive by choosing the correct answers</p>
+                </div>
+
+                <div class="main-menu-buttons">
+                    <div class="start-btn-container">
+                        <button class="main-btn primary" id="start-game-btn" onclick="toggleDifficultyMenu()">
+                            <span class="btn-text">START GAME</span>
+                            <span class="btn-icon" id="start-btn-icon">▼</span>
+                        </button>
+
+                        <!-- Difficulty Selection Sub-Menu (Opens Downward as 2x2 Grid, No Emojis) -->
+                        <div id="difficulty-sub-menu" class="difficulty-sub-menu hidden">
+                            <button class="diff-btn easy" onclick="startGameFromMenu('easy')">
+                                <span class="diff-text">EASY</span>
+                            </button>
+                            <button class="diff-btn medium" onclick="startGameFromMenu('medium')">
+                                <span class="diff-text">MEDIUM</span>
+                            </button>
+                            <button class="diff-btn hard" onclick="startGameFromMenu('hard')">
+                                <span class="diff-text">HARD</span>
+                            </button>
+                            <button class="diff-btn ultimate" onclick="startGameFromMenu('ultimate')">
+                                <span class="diff-text">ULTIMATE</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="main-btn" onclick="openMenuRecords()">
+                        <span class="btn-text">RECORDS</span>
+                    </button>
+                    <button class="main-btn" onclick="openMenuHowToPlay()">
+                        <span class="btn-text">HOW TO PLAY</span>
+                    </button>
+                    <button class="main-btn" onclick="openMenuSettings()">
+                        <span class="btn-text">SETTINGS</span>
+                    </button>
+                    <button class="main-btn" onclick="openMenuCredits()">
+                        <span class="btn-text">CREDITS</span>
+                    </button>
+                </div>
+
+                <div class="menu-footer">
+                    <span class="author-tag">made by berg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Developer Test Menu (Top-Left Collapsible Panel) -->
+        <div id="dev-panel" class="hidden">
+            <div class="dev-header">
+                <span>⚡ DEV TEST MENU</span>
+                <button class="dev-toggle-btn" onclick="toggleDevPanel()">_</button>
+            </div>
+            <div class="dev-body" id="dev-body">
+                <button class="dev-btn forest" onclick="devTestForestScene()">🌲 Ending #1: Forest Wolf Attack
+                    (11s)</button>
+                <button class="dev-btn forest" onclick="devTestEnding2()">👁️ Ending #2: Dont Look Back</button>
+                <button class="dev-btn forest" onclick="devTestEnding3()">🔥 Ending #3: Lava Trap</button>
+                <button class="dev-btn danger" onclick="devTestInstantWolf()">🐺 Test Instant Wolf Attack</button>
+                <div class="dev-row">
+                    <label>Stage Jump:</label>
+                    <select id="dev-stage-select" onchange="devJumpToStage(this.value)">
+                        <option value="1">Stage 1</option>
+                        <option value="2">Stage 2</option>
+                        <option value="3">Stage 3</option>
+                        <option value="4">Stage 4</option>
+                        <option value="5">Stage 5</option>
+                        <option value="6">Stage 6</option>
+                        <option value="7">Stage 7</option>
+                        <option value="8">Stage 8</option>
+                        <option value="9">Stage 9</option>
+                        <option value="10">Stage 10</option>
+                        <option value="11">Stage 11</option>
+                        <option value="12">Stage 12</option>
+                        <option value="13">Stage 13</option>
+                        <option value="14">Stage 14</option>
+                        <option value="15">Stage 15</option>
+                    </select>
+                </div>
+                <button class="dev-btn" onclick="devSimulateWrongDoor()">🎲 Roll Random Ending</button>
+            </div>
+        </div>
+
+        <!-- ESC Pause & Settings Modal System -->
+        <div id="pause-modal">
+            <!-- MAIN PAUSE VIEW -->
+            <div class="pause-box" id="pause-main-view">
+                <h2>PAUSED</h2>
+                <div class="pause-menu-buttons">
+                    <button class="menu-btn primary" onclick="resumeGame()">RESUME GAME</button>
+                    <button class="menu-btn" onclick="openSubMenu('records')">RECORDS</button>
+                    <button class="menu-btn" onclick="openSubMenu('how-to-play')">HOW TO PLAY</button>
+                    <button class="menu-btn" onclick="openSubMenu('settings')">SETTINGS</button>
+                    <button class="menu-btn" onclick="openSubMenu('credits')">CREDITS</button>
+                    <button class="menu-btn danger" onclick="confirmReturnToMainMenu()">MAIN MENU</button>
+                </div>
+            </div>
+
+            <!-- RECORDS SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-records-view">
+                <h2>RECORDS</h2>
+                <div id="records-content-container" class="records-content">
+                    <!-- Dynamically populated via JS -->
+                </div>
+                <button class="menu-btn back-btn" onclick="closeSubMenu()">BACK</button>
+            </div>
+
+            <!-- CONFIRM RETURN TO MAIN MENU SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-confirm-mainmenu-view">
+                <h2 style="color: #ef4444;">MAIN MENU</h2>
+                <div class="confirm-content">
+                    <p class="confirm-msg">Are you sure you want to return to the Main Menu?</p>
+                    <p class="confirm-warning">⚠️ Your progress will be lost.</p>
+                </div>
+                <div class="confirm-buttons">
+                    <button class="menu-btn danger" onclick="executeReturnToMainMenu()">YES</button>
+                    <button class="menu-btn primary" onclick="closeSubMenu()">NO</button>
+                </div>
+            </div>
+
+            <!-- HOW TO PLAY SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-how-to-play-view">
+                <h2>HOW TO PLAY</h2>
+                <div class="how-to-play-content">
+                    <p class="how-to-play-desc">Navigate through infinite dark corridors by answering the chalkboard
+                        questions. Choose the correct door (Left or Right) to move forward. Avoid wrong doors!</p>
+                    <div class="controls-list">
+                        <div class="control-item"><span class="key-badge">W A S D</span> <span class="key-label">Move
+                                Around</span></div>
+                        <div class="control-item"><span class="key-badge">MOUSE</span> <span class="key-label">Look
+                                Around</span></div>
+                        <div class="control-item"><span class="key-badge">SHIFT</span> <span
+                                class="key-label">Sprint</span></div>
+                        <div class="control-item"><span class="key-badge">E</span> <span class="key-label">Open /
+                                Interact</span></div>
+                        <div class="control-item"><span class="key-badge">ESC</span> <span class="key-label">Pause
+                                Game</span></div>
+                    </div>
+                </div>
+                <button class="menu-btn back-btn" onclick="closeSubMenu()">BACK</button>
+            </div>
+
+            <!-- SETTINGS SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-settings-view">
+                <h2>SETTINGS</h2>
+                <div class="settings-group">
+                    <button class="menu-btn controllers-menu-btn" onclick="openSubMenu('controllers')">
+                        CONTROLLERS
+                    </button>
+
+                    <div class="setting-row">
+                        <label id="lang-label">Language / Dil</label>
+                        <select id="lang-select" onchange="updateLanguage(this.value)">
+                            <option value="en" selected>EN</option>
+                            <option value="tr">TR</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label id="bgm-label">Music Volume (BGM)</label>
+                        <input type="range" id="bgm-slider" min="0" max="1" step="0.05" value="0.6"
+                            oninput="updateBGMVolume(this.value)">
+                        <span id="bgm-val">60%</span>
+                    </div>
+
+                    <div class="setting-row">
+                        <label id="sfx-label">Effects Volume (SFX)</label>
+                        <input type="range" id="sfx-slider" min="0" max="1" step="0.05" value="1.0"
+                            oninput="updateSFXVolume(this.value)">
+                        <span id="sfx-val">100%</span>
+                    </div>
+
+                    <div class="setting-row">
+                        <label id="sens-label">Mouse Sensitivity</label>
+                        <input type="range" id="sens-slider" min="0.5" max="3.0" step="0.1" value="1.0"
+                            oninput="updateSensitivity(this.value)">
+                        <span id="sens-val">1.0x</span>
+                    </div>
+                </div>
+                <button class="menu-btn back-btn" onclick="closeSubMenu()">BACK</button>
+            </div>
+
+            <!-- CONTROLLERS SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-controllers-view">
+                <h2>CONTROLLERS</h2>
+                <!-- Tab Switcher -->
+                <div class="ctrl-tabs">
+                    <button class="ctrl-tab active" id="ctrl-tab-keyboard"
+                        onclick="switchControllerTab('keyboard')">KEYBOARD</button>
+                    <button class="ctrl-tab" id="ctrl-tab-mobile"
+                        onclick="switchControllerTab('mobile')">MOBILE</button>
+                </div>
+
+                <!-- Keyboard Settings Panel -->
+                <div class="ctrl-panel" id="ctrl-panel-keyboard">
+                    <div class="keybind-list">
+                        <div class="keybind-row">
+                            <span class="keybind-action">Move Forward</span>
+                            <button class="keybind-key" data-action="KeyW" onclick="startRebind(this)">W</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Move Left</span>
+                            <button class="keybind-key" data-action="KeyA" onclick="startRebind(this)">A</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Move Backward</span>
+                            <button class="keybind-key" data-action="KeyS" onclick="startRebind(this)">S</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Move Right</span>
+                            <button class="keybind-key" data-action="KeyD" onclick="startRebind(this)">D</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Sprint</span>
+                            <button class="keybind-key" data-action="ShiftLeft"
+                                onclick="startRebind(this)">SHIFT</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Interact / Open</span>
+                            <button class="keybind-key" data-action="KeyE" onclick="startRebind(this)">E</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-action">Pause Menu</span>
+                            <button class="keybind-key disabled" data-action="Escape">ESC</button>
+                        </div>
+                    </div>
+                    <button class="menu-btn reset-keybinds-btn" onclick="resetKeybindings()">RESET</button>
+                </div>
+
+                <!-- Mobile Settings Panel -->
+                <div class="ctrl-panel hidden" id="ctrl-panel-mobile">
+                    <div class="mobile-settings-list">
+                        <div class="mobile-setting-item">
+                            <div class="mobile-setting-header">
+                                <span class="mobile-setting-label">Show Touch Controls</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-touch-ui" checked
+                                        onchange="toggleTouchUI(this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <span class="mobile-setting-desc">Show joystick, interact button and settings icon on
+                                screen</span>
+                        </div>
+                        <div class="mobile-setting-item">
+                            <div class="mobile-setting-header">
+                                <span class="mobile-setting-label">Controls Opacity</span>
+                                <span id="touch-opacity-val" class="mobile-setting-value">70%</span>
+                            </div>
+                            <input type="range" id="touch-opacity-slider" min="0.15" max="1" step="0.05" value="0.7"
+                                oninput="updateTouchOpacity(this.value)">
+                        </div>
+                        <div class="mobile-setting-item">
+                            <div class="mobile-setting-header">
+                                <span class="mobile-setting-label">Controls Size</span>
+                                <span id="touch-size-val" class="mobile-setting-value">25</span>
+                            </div>
+                            <input type="range" id="touch-size-slider" min="10" max="50" step="1" value="25"
+                                oninput="updateTouchSize(this.value)">
+                        </div>
+                    </div>
+                    <button class="menu-btn reset-keybinds-btn" onclick="resetMobileSettings()">RESET</button>
+                </div>
+
+                <button class="menu-btn back-btn" onclick="openSubMenu('settings')">BACK</button>
+            </div>
+
+            <!-- CREDITS SUB-VIEW -->
+            <div class="pause-box hidden" id="pause-credits-view">
+                <h2>CREDITS</h2>
+                <div class="credits-content">
+                    <p class="credits-author">bergrfpv</p>
+                    <p class="credits-sub">made by berg</p>
+                </div>
+                <button class="menu-btn back-btn" onclick="closeSubMenu()">BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         MOBILE TOUCH UI - OUTSIDE game-container for z-index fix
+         ===================================================== -->
+    <button id="in-game-settings-btn" class="hidden" onclick="togglePause()" title="Settings">
+        <img src="icons/sett.png" alt="Settings">
+    </button>
+
+    <div id="mobile-controls" class="hidden">
+        <!-- Left Side: Virtual Joystick (D-Pad with Sprint Threshold Ring) -->
+        <div id="mobile-joystick-container">
+            <div id="joystick-base">
+                <div id="joystick-sprint-ring"></div>
+                <div id="joystick-knob"></div>
+            </div>
+        </div>
+
+        <!-- Right Side: Interaction Button (interact2.png) -->
+        <div id="mobile-interact-btn">
+            <img src="icons/interact2.png" alt="Interact">
+        </div>
+    </div>
+
+    <!-- Sleek Grey Developer Console Modal (OUTSIDE mobile-controls FOR DIRECT DISPLAY) -->
+    <div id="dev-console-modal" class="hidden">
+        <div class="dev-console-box">
+            <div class="dev-console-header">
+                <span class="dev-console-title">CONSOLE</span>
+            </div>
+            <div class="dev-console-input-wrap">
+                <span class="dev-console-prompt">&gt;</span>
+                <input type="text" id="dev-console-input" maxlength="50" placeholder="" autocomplete="off"
+                    spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <!-- VICTORY MODAL OVERLAY (OUTSIDE mobile-controls FOR DIRECT DISPLAY & CLICK RESPONSE) -->
+    <div id="victory-modal" class="hidden">
+        <div class="victory-box">
+            <h1 class="victory-header" id="victory-header-text">
+                Congratulations, you completed the Hard level in 00:00:00.
+            </h1>
+            <p class="victory-body">
+                Thank you for playing my game. This is the first game I’ve released, so I’m a new game developer.<br><br>
+                If you enjoyed it, please consider leaving a review. If you have any feedback or notice areas I can improve on, feel free to let me know!
+            </p>
+            <div class="victory-signature">-bergrfpv</div>
+            <button class="victory-mainmenu-btn" id="victory-main-menu-btn" onclick="executeReturnToMainMenu()">MAIN MENU</button>
+        </div>
+    </div>
+
+    <!-- Secret Stealth Console Toggle Button (Top-Left Empty Black Square for Mobile & Mouse Testing) -->
+    <button id="secret-console-btn" title="Toggle Console"></button>
+
+    <!-- Game Engine Scripts -->
+        <script src="js/textures.js"></script>
+        <script src="js/audio.js"></script>
+        <script src="js/game.js"></script>
+</body>
+
+</html>
