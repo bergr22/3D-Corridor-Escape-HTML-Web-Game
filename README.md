@@ -3,12 +3,11 @@
 Make your way through the corridors, answer the questions correctly, pass through 15 rooms, and reach victory. Choosing the wrong path risks losing your progress, forcing you to restart from Room 1.
 
 <p align="center">
- <img src="docs/mainmenu.png" alt="Main Menu" width="48%" /> _ 
- <img src="docs/game interface0.png" alt="Game Interface 0" width="48%" />
-</p>
-<p align="center">
-  <img src="docs/game interface1.png" alt="Game Interface 1" width="48%" /> _
-  <img src="docs/game interface3.png" alt="Game Interface 3" width="48%" />
+ <img src="docs/mainmenu.png" alt="Main Menu" width="58%" /> <p align="center">
+  
+  <img src="docs/game interface0.png" alt="Game Interface 0" width="34%" /> - -
+  <img src="docs/game interface1.png" alt="Game Interface 1" width="30%" /> - -
+  <img src="docs/game interface3.png" alt="Game Interface 3" width="30%" /> 
 </p>
 
 
