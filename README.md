@@ -5,9 +5,9 @@ Make your way through the corridors, answer the questions correctly, pass throug
 <p align="center">
  <img src="docs/mainmenu.png" alt="Main Menu" width="58%" /> <p align="center">
  
-  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎‎  ‎  <img src="docs/game interface0.png" alt="Game Interface 0" width="32%" /> ‎ ‎ ‎ 
-  <img src="docs/game interface1.png" alt="Game Interface 1" width="28%" /> ‎ ‎ ‎ 
-  <img src="docs/game interface3.png" alt="Game Interface 3" width="28%" /> 
+  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎‎  ‎  <img src="docs/game interface0.png" alt="Game Interface 0" width="30%" /> ‎ ‎ ‎ 
+  <img src="docs/game interface1.png" alt="Game Interface 1" width="26%" /> ‎ ‎ ‎ 
+  <img src="docs/game interface3.png" alt="Game Interface 3" width="26%" /> 
 </p>
 
 
